@@ -1,35 +1,26 @@
 #include "hash_tables.h"
-
 /**
- * hash_table_delete - delete given hash table
- * @ht: hash table given
+ * hash_table_delete - deletes and frees hash table
+ * @ht: hash table to beat
  */
 void hash_table_delete(hash_table_t *ht)
 {
-	hash_node_t *tmp, *prev;
-	unsigned long int sz, i;
+	unsigned int i;
+	hash_node_t *freer, *tmp;
 
-	if (ht == NULL)
-		return;
-	if (ht->array == NULL)
+	for (i = 0; i < ht->size; i++)
 	{
-		free(ht);
-		return;
-	}
-
-	for (i = 0, sz = ht->size; i < sz; i++)
-	{
-		tmp = ht->array[i];
-		while (tmp)
+		freer = ht->array[i];
+		while (freer)
 		{
-			prev = tmp;
-			tmp = tmp->next;
-			free(prev->key);
-			free(prev->value);
-			free(prev);
+			tmp = freer->next;
+			free(freer->key);
+			free(freer->value);
+			free(freer);
+			freer = tmp;
 		}
 	}
-
 	free(ht->array);
 	free(ht);
+
 }
